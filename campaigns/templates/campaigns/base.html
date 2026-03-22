@@ -1,0 +1,199 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CrowdSpark{% endblock %}</title>
+
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    
+
+  
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<style>
+        * { font-family: 'Inter', system-ui, sans-serif; }
+        body { background-color: #fbfdff; }
+        .glass-morph {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 30px -10px rgba(0,90,120,0.15);
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #2ebfa5 0%, #38b2ac 100%);
+            height: 0.6rem;
+            border-radius: 999px;
+        }
+        .btn-primary {
+            background: #0f2b3c;
+            color: white;
+            padding: 0.6rem 1.6rem;
+            border-radius: 40px;
+            font-weight: 500;
+            transition: 0.2s;
+            border: 1px solid #0f2b3c;
+        }
+        .btn-primary:hover {
+            background: #1e4a5f;
+            border-color: #1e4a5f;
+            box-shadow: 0 8px 16px -6px rgba(20,80,100,0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #cbd5e0;
+            padding: 0.6rem 1.6rem;
+            border-radius: 40px;
+            color: #1e293b;
+            transition: 0.2s;
+        }
+        .btn-outline:hover {
+            border-color: #0f2b3c;
+            background: #f0f7fa;
+        }
+        .card {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 8px 28px -8px rgba(0, 30, 40, 0.08);
+            transition: all 0.2s;
+        }
+        /* custom smooth category pill */
+        .category-pill {
+            background: #ecfdf5;
+            color: #115e59;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .category-pill:hover {
+            background: #d1fae5;
+        }
+        .donor-avatar {
+            width: 36px; height: 36px;
+            background: #cbd5e0;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1e293b;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        /* simple tab active state simulation (dashboard) */
+        .dashboard-tab {
+            border-bottom: 3px solid transparent;
+            padding-bottom: 0.5rem;
+            font-weight: 500;
+            color: #4b5563;
+        }
+        .dashboard-tab.active {
+            border-bottom-color: #0f2b3c;
+            color: #0f2b3c;
+        }
+        /* for demo: some fixed heights, consistent */
+        .campaign-img {
+            height: 200px;
+            object-fit: cover;
+            border-radius: 20px 20px 0 0;
+        }
+        footer a { color: #94a3b8; transition: color 0.2s; }
+        footer a:hover { color: #2dd4bf; }
+    </style>
+
+<body class="antialiased text-gray-800">
+
+
+<body class="antialiased text-gray-800">
+
+<!-- ========== REUSABLE NAVBAR ========== -->
+<nav class="sticky top-0 z-30 glass-morph py-3 px-6 md:px-10 flex items-center justify-between flex-wrap gap-4">
+    <div class="flex items-center space-x-1">
+        <i class="fa-solid fa-bolt text-3xl text-teal-600"></i>
+        <span class="text-2xl font-bold tracking-tight text-gray-800">CrowdSpark</span>
+    </div>
+   <div class="hidden md:flex items-center space-x-6 text-gray-700 font-medium">
+
+    <a href="{% url 'home' %}" class="hover:text-teal-700">Home</a>
+
+    <a href="{% url 'explore' %}" class="hover:text-teal-700">Explore</a>
+
+    <a href="#" class="hover:text-teal-700">Categories</a>
+
+    <a href="#" class="hover:text-teal-700">About</a>
+
+</div>
+
+<div class="flex items-center space-x-3">
+
+  {% if user.is_authenticated %}
+
+<span class="mr-3 text-gray-700">
+
+Hello {{ user.username }}
+
+</span>
+
+<a href="{% url 'logout' %}"
+
+class="bg-slate-800 text-white px-4 py-2 rounded">
+
+Logout
+
+</a>
+
+{% else %}
+
+<a href="{% url 'login' %}"
+
+class="mr-3">
+
+Login
+
+</a>
+
+<a href="{% url 'register' %}"
+
+class="bg-slate-800 text-white px-4 py-2 rounded">
+
+Register
+
+</a>
+
+{% endif %}
+</div>
+</nav>
+{% block content %}{% endblock %}
+
+<!-- Footer -->
+<footer class="bg-[#0b1c24] text-white mt-20 py-12 px-6 md:px-12 rounded-t-[48px]">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-10">
+        <div><i class="fa-solid fa-bolt text-3xl text-teal-400"></i><span class="text-2xl font-bold ml-1">CrowdSpark</span><p class="text-sm text-gray-400 mt-3">Ignite change, spark hope. Low fees, global reach.</p></div>
+        <div><h5 class="font-semibold text-lg">Explore</h5><ul class="space-y-2 mt-3 text-gray-400"><li>Home</li><li>How it works</li><li>Categories</li></ul></div>
+        <div><h5 class="font-semibold text-lg">Support</h5><ul class="space-y-2 mt-3 text-gray-400"><li>Help center</li><li>Trust & safety</li><li>Contact</li></ul></div>
+        <div><h5 class="font-semibold text-lg">Social</h5><div class="flex space-x-5 mt-4 text-2xl"><i class="fa-brands fa-twitter hover:text-teal-400"></i><i class="fa-brands fa-instagram hover:text-teal-400"></i><i class="fa-brands fa-linkedin hover:text-teal-400"></i><i class="fa-brands fa-facebook hover:text-teal-400"></i></div></div>
+    </div>
+    <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-500 text-sm">© 2025 CrowdSpark – designed for changemakers.</div>
+</footer>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

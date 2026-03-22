@@ -1,0 +1,121 @@
+{% extends 'campaigns/base.html' %}
+
+{% block content %}
+
+<section class="max-w-7xl mx-auto px-5 py-10">
+
+<div class="grid lg:grid-cols-3 gap-10">
+
+<!-- LEFT SIDE -->
+<div class="lg:col-span-2">
+
+{% if campaign.image %}
+<img src="{{ campaign.image.url }}"
+class="rounded-3xl w-full">
+{% endif %}
+
+<h1 class="text-4xl font-bold mt-6">
+{{ campaign.title }}
+</h1>
+
+<p class="text-sm text-gray-500 mt-2">
+{{ campaign.category }} · by {{ campaign.owner.username }}
+</p>
+
+<div class="mt-6 text-gray-700 leading-relaxed">
+{{ campaign.description }}
+</div>
+
+</div>
+
+
+<!-- RIGHT SIDEBAR -->
+<div class="bg-white p-6 rounded-3xl shadow-lg h-fit sticky top-24 space-y-4">
+
+<!-- Progress bar -->
+
+<div class="pt-2">
+
+<div class="w-full bg-gray-200 rounded-full h-3">
+
+<div class="bg-teal-500 h-3 rounded-full"
+
+style="width: {{ campaign.progress }}%">
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- Amount display -->
+
+<div class="flex justify-between mt-2 font-semibold">
+
+<span>
+Raised ₹{{ campaign.amount_raised }}
+</span>
+
+<span>
+Goal ₹{{ campaign.goal_amount }}
+</span>
+
+</div>
+
+
+<!-- Donate button -->
+
+<a href="{% url 'donate' campaign.id %}"
+
+class="block text-center bg-teal-500 hover:bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold transition">
+
+Donate Now
+
+</a>
+
+
+<!-- Donors -->
+
+<div class="mt-6">
+
+<h3 class="font-semibold mb-2">
+
+Recent supporters
+
+</h3>
+
+
+{% for d in donations %}
+
+<p class="text-sm">
+
+{{ d.donor.username }} donated ₹{{ d.amount }}
+
+<span class="text-gray-400 text-xs">
+
+({{ d.donated_at|timesince }} ago)
+
+</span>
+
+</p>
+
+{% empty %}
+
+<p class="text-sm text-gray-500">
+
+Be the first donor 🙌
+
+</p>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+{% endblock %}

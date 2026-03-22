@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Donate · {{ campaign.title }}</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+
+body { background-color:#f9fafc; }
+
+.donation-card{
+transition:all 0.2s ease;
+}
+
+.progress-bar{
+transition:width 0.3s ease;
+}
+
+.soft-shadow{
+box-shadow:0 8px 30px rgba(0,0,0,0.05),
+0 2px 8px rgba(0,20,10,0.02);
+}
+
+</style>
+
+</head>
+
+<body class="antialiased font-sans text-gray-800">
+
+<div class="max-w-6xl mx-auto px-4 py-8">
+
+<img class="w-full h-80 object-cover rounded-2xl soft-shadow mb-8"
+src="{{ campaign.image.url }}">
+
+<div class="flex flex-col lg:flex-row gap-8">
+
+<div class="flex-1">
+
+<h1 class="text-3xl font-bold mb-2">
+{{ campaign.title }}
+</h1>
+
+<p class="text-gray-600 mb-4">
+📍 {{ campaign.location }}
+</p>
+
+<div class="bg-white p-5 rounded-xl soft-shadow mb-6">
+
+<div class="flex justify-between">
+
+<span class="font-semibold">
+₹{{ campaign.amount_raised }} raised
+</span>
+
+<span class="text-gray-500">
+of ₹{{ campaign.goal_amount }}
+</span>
+
+</div>
+
+<div class="w-full bg-gray-100 rounded-full h-2.5 mt-3">
+
+<div class="bg-emerald-500 h-2.5 rounded-full"
+
+style="width: {{ campaign.progress }}%;">
+
+</div>
+
+</div>
+
+</div>
+
+<div class="bg-white p-5 rounded-xl soft-shadow">
+
+<h2 class="text-xl font-semibold mb-3">
+Our story
+</h2>
+
+<p class="text-gray-600">
+{{ campaign.description }}
+</p>
+
+</div>
+
+</div>
+
+<div class="lg:w-96">
+
+<div class="bg-white rounded-2xl soft-shadow p-5 donation-card">
+
+<form method="POST">
+
+{% csrf_token %}
+
+<h3 class="text-xl font-bold mb-4">
+
+Make a donation
+
+</h3>
+
+<div class="grid grid-cols-2 gap-3 mb-5">
+
+<button type="button"
+
+onclick="document.getElementsByName('amount')[0].value=100"
+
+class="bg-gray-50 border rounded-xl py-3">
+
+₹100
+
+</button>
+
+<button type="button"
+
+onclick="document.getElementsByName('amount')[0].value=500"
+
+class="bg-gray-50 border rounded-xl py-3">
+
+₹500
+
+</button>
+
+<button type="button"
+
+onclick="document.getElementsByName('amount')[0].value=1000"
+
+class="bg-gray-50 border rounded-xl py-3">
+
+₹1000
+
+</button>
+
+<button type="button"
+
+onclick="document.getElementsByName('amount')[0].value=5000"
+
+class="bg-gray-50 border rounded-xl py-3">
+
+₹5000
+
+</button>
+
+</div>
+
+<div class="mb-5">
+
+<label class="text-sm text-gray-600">
+
+Enter amount
+
+</label>
+
+<input
+
+type="number"
+
+name="amount"
+
+min="10"
+
+value="500"
+
+required
+
+class="w-full border rounded-xl py-3 px-4 mt-1">
+
+</div>
+
+<button type="submit"
+
+class="w-full bg-gray-900 text-white py-3 rounded-xl hover:bg-gray-800">
+
+Donate now
+
+</button>
+
+</form>
+
+<div class="text-center text-xs text-gray-400 mt-4">
+
+Secure • No platform fee
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

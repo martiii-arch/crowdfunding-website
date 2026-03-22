@@ -1,0 +1,158 @@
+{% extends 'campaigns/base.html' %}
+
+{% block title %}
+Campaigns | Crowdfunding
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+.header{
+background:#0077cc;
+color:white;
+padding:15px;
+text-align:center;
+}
+
+.campaign-list{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:20px;
+padding:20px;
+}
+
+.campaign-card{
+background:white;
+padding:15px;
+border-radius:10px;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
+transition:0.2s;
+}
+
+.campaign-card:hover{
+transform:translateY(-3px);
+box-shadow:0 8px 20px rgba(0,0,0,0.1);
+}
+
+.progress{
+background:#eee;
+border-radius:10px;
+overflow:hidden;
+height:15px;
+margin:10px 0;
+}
+
+.progress-bar{
+background:#28a745;
+height:100%;
+}
+
+</style>
+
+
+<!-- Success messages -->
+
+{% if messages %}
+
+<div class="max-w-6xl mx-auto mt-4">
+
+{% for message in messages %}
+
+<div class="bg-green-100 text-green-700 px-4 py-2 rounded mb-2">
+
+{{ message }}
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+
+
+<div class="header">
+
+<h1>Crowdfunding Campaigns</h1>
+
+</div>
+
+
+<div class="campaign-list">
+
+{% for campaign in campaigns %}
+
+<div class="campaign-card">
+
+<h2 class="text-xl font-semibold">
+
+{{ campaign.title }}
+
+</h2>
+
+
+{% if campaign.image %}
+
+<img src="{{ campaign.image.url }}"
+
+style="width:100%; border-radius:10px; margin:10px 0;">
+
+{% endif %}
+
+
+<p class="text-gray-600">
+
+{{ campaign.description|truncatechars:120 }}
+
+</p>
+
+
+<p>
+
+<b>Goal:</b> ₹{{ campaign.goal_amount }}
+
+</p>
+
+
+<p>
+
+<b>Raised:</b> ₹{{ campaign.amount_raised }}
+
+</p>
+
+
+<div class="progress">
+
+<div class="progress-bar"
+
+style="width: {{ campaign.progress|default:0 }}%">
+
+</div>
+
+</div>
+
+
+<p style="font-size:13px;color:gray;">
+
+{{ campaign.progress|floatformat:0 }}% funded
+
+</p>
+
+
+<a href="{% url 'campaign_detail' campaign.id %}"
+
+class="inline-block mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+
+View Campaign
+
+</a>
+
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends 'campaigns/base.html' %}
+{% block title %}Campaigns | Crowdfunding{% endblock %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Campaigns</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background: #0077cc;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .campaign-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .campaign-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .campaign-card h2 {
+            margin-top: 0;
+        }
+        .progress {
+            background: #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 15px;
+            margin: 10px 0;
+        }
+        .progress-bar {
+            background: #28a745;
+            height: 100%;
+        }
+        .donate-btn {
+            background: #0077cc;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .donate-btn:hover {
+            background: #005fa3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Success messages -->
+    {% if messages %}
+    <div style="background:#d4edda; color:#155724; padding:10px; margin:15px; border-radius:5px;">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="header">
+        <h1>Crowdfunding Campaigns</h1>
+    </div>
+
+    <div class="campaign-list">
+        {% for campaign in campaigns %}
+        <div class="campaign-card">
+            <h2>{{ campaign.title }}</h2>
+            {% if campaign.image %}
+                <img src="{{ campaign.image.url }}" alt="{{ campaign.title }}" style="width:100%; border-radius:10px; margin-bottom:10px;">
+            {% endif %}
+
+            <p>{{ campaign.description|truncatechars:120 }}</p>
+            <p><b>Goal:</b> ₹{{ campaign.goal_amount }}</p>
+            <p><b>Raised:</b> ₹{{ campaign.amount_raised }}</p>
+            
+            <div class="progress">
+                <div class="progress-bar" style="width: {{ campaign.progress }}%"></div>
+            </div>
+
+            
+            <a href="{% url 'donate' campaign.id %}">
+                <button class="donate-btn">Donate</button>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
+{% endblock %}
