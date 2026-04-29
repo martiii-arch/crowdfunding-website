@@ -58,7 +58,7 @@ ROOT_URLCONF = 'crowdfunding.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -144,3 +144,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_REDIRECT_URL = 'campaign_list'
 LOGOUT_REDIRECT_URL = 'campaign_list'
 LOGIN_URL = 'login'
+
+RAZORPAY_KEY_ID = "rzp_test_ShmIxRvgYoaNE5"
+RAZORPAY_KEY_SECRET = "ku5BT6JA4p2wQ3J5y4ys6EGg"

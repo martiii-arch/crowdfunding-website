@@ -1,0 +1,293 @@
+
+{% extends 'campaigns/base.html' %}
+
+{% block title %}Create Campaign | Crowdfund{% endblock %}
+
+{% block content %}
+<style>
+  /* ========== RESET & GLOBAL ========== */
+  .create-campaign-container {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #eef2f5 100%);
+    min-height: calc(100vh - 80px);
+    padding: 3rem 1.5rem;
+    margin: 0;
+  }
+
+  /* ========== CARD ========== */
+  .campaign-card {
+    max-width: 720px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 32px;
+    box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.02);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .campaign-card:hover {
+    box-shadow: 0 28px 40px -16px rgba(0, 0, 0, 0.12);
+  }
+
+  /* ========== HEADER ========== */
+  .form-header {
+    padding: 2rem 2rem 0.5rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid #eef2f6;
+  }
+
+  .form-header h1 {
+    font-size: 1.9rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    background: linear-gradient(135deg, #1e2a3e, #0f3b2c);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-header .subtitle {
+    font-size: 1rem;
+    color: #5b6e8c;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+  }
+
+  /* ========== FORM BODY ========== */
+  .form-body {
+    padding: 1.8rem 2rem 2.2rem 2rem;
+  }
+
+  /* Form groups */
+  .form-group {
+    margin-bottom: 1.7rem;
+  }
+
+  /* Labels */
+  .form-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #1f2a3e;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.2px;
+  }
+
+  .form-group label i {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 1rem;
+  }
+
+  /* Inputs, textarea, file */
+  .form-control {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
+    font-family: inherit;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 20px;
+    background-color: #fefefe;
+    transition: all 0.2s ease;
+    color: #1b3055;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  textarea.form-control {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  input[type="number"].form-control {
+    -moz-appearance: textfield;
+  }
+  input[type="number"].form-control::-webkit-inner-spin-button,
+  input[type="number"].form-control::-webkit-outer-spin-button {
+    opacity: 0.5;
+  }
+
+  /* Focus effect */
+  .form-control:focus {
+    border-color: #1e293b;
+    box-shadow: 0 0 0 4px rgba(44, 122, 77, 0.12);
+    background-color: #ffffff;
+  }
+
+  /* Hover effect */
+  .form-control:hover:not(:focus) {
+    border-color: #cbd5e1;
+    background-color: #fafcff;
+  }
+
+  /* File input custom styling */
+  input[type="file"].form-control {
+    padding: 0.65rem 0.8rem;
+    background-color: #f8fafc;
+    cursor: pointer;
+  }
+
+  input[type="file"].form-control::file-selector-button {
+    background: #edf2f7;
+    border: none;
+    border-radius: 40px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    margin-right: 1rem;
+    color: #1f2a3e;
+    transition: background 0.2s;
+    cursor: pointer;
+  }
+
+  input[type="file"].form-control::file-selector-button:hover {
+    background: #e2e8f0;
+  }
+
+  /* Optional inline icon (simulated with pseudo or emoji, but we keep clean) */
+  .input-icon {
+    position: relative;
+  }
+
+  /* Submit button */
+  .submit-btn {
+    width: 100%;
+    background: linear-gradient(105deg, #1e293b 0%, #2e29af 100%);
+    border: none;
+    padding: 1rem 1.5rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: white;
+    border-radius: 44px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    margin-top: 0.8rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.02);
+    letter-spacing: -0.2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .submit-btn:hover {
+    background: linear-gradient(105deg, #02204f 0%);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 20px -12px rgba(44, 122, 77, 0.4);
+  }
+
+  .submit-btn:active {
+    transform: translateY(1px);
+  }
+
+  /* Additional small extras */
+  .hint-text {
+    font-size: 0.75rem;
+    color: #7c8ba0;
+    margin-top: 0.4rem;
+    margin-left: 0.3rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .create-campaign-container {
+      padding: 1.5rem 1rem;
+    }
+    .form-header {
+      padding: 1.5rem 1.5rem 0rem 1.5rem;
+    }
+    .form-header h1 {
+      font-size: 1.6rem;
+    }
+    .form-body {
+      padding: 1.5rem;
+    }
+    .form-group label {
+      font-size: 0.85rem;
+    }
+    .form-control {
+      padding: 0.75rem 1rem;
+    }
+  }
+
+  /* Custom placeholder */
+  ::placeholder {
+    color: #b9c2d0;
+    font-weight: 400;
+    font-size: 0.9rem;
+  }
+
+  /* Django error list (just in case, but no backend code, optional) */
+  .errorlist {
+    background: #fee2e2;
+    color: #b91c1c;
+    border-radius: 16px;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    margin: 0.3rem 0 0 0;
+    list-style: none;
+  }
+</style>
+
+<div class="create-campaign-container">
+  <div class="campaign-card">
+    <div class="form-header">
+      <h1> Start a campaign</h1>
+      <div class="subtitle">Bring your idea to life — raise funds for what matters</div>
+    </div>
+
+    <div class="form-body">
+      <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        <!-- Title field -->
+        <div class="form-group">
+          <label for="{{ form.title.id_for_label }}">
+            <span></span> Campaign Title
+          </label>
+          {{ form.title }}
+          {% if form.title.help_text %}
+            <div class="hint-text">{{ form.title.help_text }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Description field -->
+        <div class="form-group">
+          <label for="{{ form.description.id_for_label }}">
+            <span></span> Description
+          </label>
+          {{ form.description }}
+          <div class="hint-text">Tell your story and why people should support you</div>
+        </div>
+
+        <!-- Goal Amount field -->
+        <div class="form-group">
+          <label for="{{ form.goal_amount.id_for_label }}">
+            <span></span> Goal Amount ($)
+          </label>
+          {{ form.goal_amount }}
+          <div class="hint-text">Minimum amount needed to reach your project goal</div>
+        </div>
+
+        <!-- Image field -->
+        <div class="form-group">
+          <label for="{{ form.image.id_for_label }}">
+            <span></span> Campaign Image
+          </label>
+          {{ form.image }}
+          <div class="hint-text">PNG, JPG or GIF (recommended size 1200x630px)</div>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <span></span> Launch Campaign
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+

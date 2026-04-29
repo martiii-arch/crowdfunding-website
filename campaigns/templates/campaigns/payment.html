@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Processing Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+
+<body>
+
+<h2>Processing your payment...</h2>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+var options = {
+    "key": "{{ razorpay_key }}",
+    "amount": "{{ amount }}",
+    "currency": "INR",
+    "name": "Crowdfunding",
+    "description": "Donation",
+    "order_id": "{{ order_id }}",
+
+    
+    "callback_url": "http://127.0.0.1:8000/payment-success/",
+    "redirect": true,
+
+    
+    "modal": {
+        "ondismiss": function(){
+            alert("Payment cancelled");
+        }
+    }
+};
+
+var rzp = new Razorpay(options);
+
+
+rzp.open();
+</script>
+
+</body>
+</html>

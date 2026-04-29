@@ -29,8 +29,14 @@ urlpatterns = [
     name='register'),
 
     path('logout/',
-views.logout_view,
-name='logout'),
+    views.logout_view,
+    name='logout'),
+
+    path('create/',
+      views.create_campaign,
+        name='create_campaign'),
+
+    path('payment-success/', views.payment_success, name='payment_success'),
 
 
 ]

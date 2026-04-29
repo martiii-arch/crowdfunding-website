@@ -35,25 +35,21 @@ class Campaign(models.Model):
         null=True
     )
 
-
+    
     def progress(self):
 
         if self.goal_amount > 0:
-
-            return (self.amount_raised / self.goal_amount) * 100
+            return int((self.amount_raised / self.goal_amount) * 100)
 
         return 0
-
 
     def donor_count(self):
 
         return self.donations.count()
 
-
     def __str__(self):
 
         return self.title
-
 
 
 
@@ -75,11 +71,13 @@ class Donation(models.Model):
         decimal_places=2
     )
 
+    # ✅ ADD THESE TWO
+    order_id = models.CharField(max_length=255, null=True, blank=True)
+    payment_id = models.CharField(max_length=255, null=True, blank=True)
+
     donated_at = models.DateTimeField(
         auto_now_add=True
     )
 
-
     def __str__(self):
-
         return f"{self.donor.username} donated {self.amount}"
