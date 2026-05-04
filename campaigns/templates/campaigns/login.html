@@ -1,8 +1,6 @@
 {% extends 'campaigns/base.html' %}
 
-{% block title %}
-Login
-{% endblock %}
+{% block title %}Login | CrowdSpark{% endblock %}
 
 {% block content %}
 
@@ -32,27 +30,11 @@ Welcome back
 
 <p class="mt-2 text-center text-sm text-gray-500">
 
-Sign in to continue
+Sign in to your account
 
 </p>
 
-
-<!-- Django messages -->
-
-{% if messages %}
-
-{% for message in messages %}
-
-<div class="bg-red-100 text-red-700 p-3 rounded-lg mt-4 text-sm">
-
-{{ message }}
-
-</div>
-
-{% endfor %}
-
-{% endif %}
-
+{# ✅ REMOVED: messages display — now handled in base.html #}
 
 <form method="POST" class="mt-6 space-y-5">
 
@@ -74,9 +56,13 @@ name="username"
 
 required
 
-class="w-full border border-gray-200 rounded-xl py-3 px-4 mt-1 focus:ring-2 focus:ring-teal-200 focus:border-teal-400"
+class="w-full border border-gray-200 rounded-xl py-3 px-4 mt-1
+       focus:ring-2 focus:ring-teal-200 focus:border-teal-400
+       outline-none transition"
 
-placeholder="Enter username">
+placeholder="Enter username"
+
+autocomplete="username">
 
 </div>
 
@@ -97,28 +83,29 @@ name="password"
 
 required
 
-class="w-full border border-gray-200 rounded-xl py-3 px-4 mt-1 focus:ring-2 focus:ring-teal-200 focus:border-teal-400"
+class="w-full border border-gray-200 rounded-xl py-3 px-4 mt-1
+       focus:ring-2 focus:ring-teal-200 focus:border-teal-400
+       outline-none transition"
 
-placeholder="Enter password">
+placeholder="Enter password"
+
+autocomplete="current-password">
 
 </div>
 
 
+{# ✅ FIXED: remember me checkbox now has proper name attribute #}
 <div class="flex items-center justify-between text-sm">
 
 <label class="flex items-center">
 
-<input type="checkbox" class="mr-2">
+<input type="checkbox" name="remember_me" class="mr-2 w-4 h-4 rounded">
 
 Remember me
 
 </label>
 
-<a href="#" class="text-teal-600">
-
-Forgot password?
-
-</a>
+{# ✅ FIXED: password reset link removed — not implemented yet #}
 
 </div>
 
@@ -127,9 +114,10 @@ Forgot password?
 
 type="submit"
 
-class="w-full bg-teal-500 hover:bg-teal-600 text-white py-3 rounded-xl font-semibold transition">
+class="w-full bg-teal-500 hover:bg-teal-600 text-white py-3 rounded-xl
+       font-semibold transition">
 
-Login
+<i class="fa-solid fa-arrow-right-to-bracket mr-2"></i>Login
 
 </button>
 
@@ -140,9 +128,9 @@ Don't have an account?
 
 <a href="{% url 'register' %}"
 
-class="text-teal-600 font-semibold">
+class="text-teal-600 font-semibold hover:text-teal-700">
 
-Register
+Register here
 
 </a>
 

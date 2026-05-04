@@ -35,6 +35,9 @@ urlpatterns = [
     path('create/',
       views.create_campaign,
         name='create_campaign'),
+    path('about/',
+      views.about,
+        name='about'),
 
     path('payment-success/', views.payment_success, name='payment_success'),
 

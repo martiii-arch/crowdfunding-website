@@ -1,42 +1,104 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Processing Payment</title>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-</head>
+{% extends 'campaigns/base.html' %}
 
-<body>
+{% block title %}Processing Payment – CrowdSpark{% endblock %}
 
-<h2>Processing your payment...</h2>
+{% block content %}
 
+<div class="max-w-lg mx-auto px-4 py-16 text-center">
+
+    <div class="bg-white rounded-3xl shadow-lg p-10">
+
+        <div class="inline-flex items-center justify-center w-16 h-16
+                    bg-teal-50 rounded-2xl mb-6">
+            <i class="fa-solid fa-bolt text-3xl text-teal-500"></i>
+        </div>
+
+        <h1 class="text-2xl font-bold text-gray-800 mb-2">
+            Almost there!
+        </h1>
+
+        <p class="text-gray-500 mb-2">
+            You're donating
+            <span class="font-semibold text-teal-600">
+                ₹{{ amount|floatformat:0 }}
+            </span>
+            to
+        </p>
+
+        <p class="text-lg font-semibold text-gray-800 mb-6">
+            {{ campaign.title }}
+        </p>
+
+        <div id="loading-spinner" class="flex flex-col items-center gap-3 mb-6">
+            <div class="w-8 h-8 border-4 border-teal-200 border-t-teal-500
+                        rounded-full animate-spin"></div>
+            <p class="text-sm text-gray-400">Opening secure payment window...</p>
+        </div>
+
+        <button id="pay-btn"
+            onclick="rzp.open()"
+            class="hidden w-full bg-teal-500 hover:bg-teal-600 text-white
+                   py-3 rounded-xl font-semibold transition mb-4">
+            <i class="fa-solid fa-lock mr-2"></i>Pay ₹{{ amount|floatformat:0 }}
+        </button>
+
+        <div class="text-xs text-gray-400 space-y-1">
+            <p><i class="fa-solid fa-lock mr-1"></i>Secured by Razorpay</p>
+            <p>Your payment details are encrypted and safe</p>
+        </div>
+
+        <div class="mt-6">
+            <a href="{% url 'campaign_detail' campaign.id %}"
+                class="text-sm text-gray-400 hover:text-teal-600 transition">
+                ← Cancel and go back
+            </a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
-var options = {
-    "key": "{{ razorpay_key }}",
-    "amount": "{{ amount }}",
-    "currency": "INR",
-    "name": "Crowdfunding",
-    "description": "Donation",
-    "order_id": "{{ order_id }}",
+    var options = {
+        "key": "{{ razorpay_key }}",
+        "amount": parseInt("{{ amount }}"),
+        "currency": "INR",
+        "name": "CrowdSpark",
+        "description": "Donation to {{ campaign.title }}",
+        "order_id": "{{ order_id }}",
+        
+        // ✅ Use callback_url - Razorpay will POST here after payment
+        "callback_url": "{{ callback_url }}",
 
-    
-    "callback_url": "http://127.0.0.1:8000/payment-success/",
-    "redirect": true,
+        "modal": {
+            "ondismiss": function() {
+                window.location.href = "{% url 'campaign_detail' campaign.id %}";
+            }
+        },
 
-    
-    "modal": {
-        "ondismiss": function(){
-            alert("Payment cancelled");
+        "prefill": {
+            "name": "{{ request.user.username }}",
+        },
+
+        "theme": {
+            "color": "#0f2b3c"
         }
-    }
-};
+    };
 
-var rzp = new Razorpay(options);
+    var rzp = new Razorpay(options);
 
-
-rzp.open();
+    window.onload = function() {
+        try {
+            rzp.open();
+            document.getElementById('loading-spinner').style.display = 'none';
+        } catch(e) {
+            document.getElementById('loading-spinner').style.display = 'none';
+            document.getElementById('pay-btn').classList.remove('hidden');
+        }
+    };
 </script>
-
-</body>
-</html>
+{% endblock %}

@@ -1,121 +1,122 @@
 {% extends 'campaigns/base.html' %}
 
+{% block title %}{{ campaign.title }} – CrowdSpark{% endblock %}
+
 {% block content %}
 
 <section class="max-w-7xl mx-auto px-5 py-10">
 
-<div class="grid lg:grid-cols-3 gap-10">
+    <div class="grid lg:grid-cols-3 gap-10">
 
-<!-- LEFT SIDE -->
-<div class="lg:col-span-2">
+        <!-- LEFT SIDE -->
+        <div class="lg:col-span-2">
 
-{% if campaign.image %}
-<img src="{{ campaign.image.url }}"
-class="rounded-3xl w-full">
-{% endif %}
+            {% if campaign.image %}
+            <img src="{{ campaign.image.url }}"
+                class="rounded-3xl w-full object-cover max-h-96">
+            {% else %}
+            
+            <div class="rounded-3xl w-full max-h-96 h-64 bg-gradient-to-br from-teal-100 to-teal-200 flex items-center justify-center">
+                <i class="fa-solid fa-image text-5xl text-teal-400"></i>
+            </div>
+            {% endif %}
 
-<h1 class="text-4xl font-bold mt-6">
-{{ campaign.title }}
-</h1>
+            <h1 class="text-4xl font-bold mt-6">
+                {{ campaign.title }}
+            </h1>
 
-<p class="text-sm text-gray-500 mt-2">
-{{ campaign.category }} · by {{ campaign.owner.username }}
-</p>
+            <p class="text-sm text-gray-500 mt-2">
+                <i class="fa-solid fa-user text-teal-500 mr-1"></i>
+                Started by <span class="font-medium text-gray-700">{{ campaign.creator.username }}</span>
+                &nbsp;·&nbsp;
+                <i class="fa-solid fa-calendar text-teal-500 mr-1"></i>
+                {{ campaign.created_at|date:"M d, Y" }}
+            </p>
 
-<div class="mt-6 text-gray-700 leading-relaxed">
-{{ campaign.description }}
-</div>
+            <div class="mt-6 text-gray-700 leading-relaxed">
+                {{ campaign.description|linebreaks }}
+            </div>
 
-</div>
+        </div>
 
+        <!-- RIGHT SIDEBAR -->
+        <div class="bg-white p-6 rounded-3xl shadow-lg h-fit sticky top-24 space-y-4">
 
-<!-- RIGHT SIDEBAR -->
-<div class="bg-white p-6 rounded-3xl shadow-lg h-fit sticky top-24 space-y-4">
+            <!-- Amount display -->
+            <div class="flex justify-between font-semibold text-lg">
+                <span class="text-teal-600">₹{{ campaign.amount_raised }} raised</span>
+                <span class="text-gray-400 font-normal">of ₹{{ campaign.goal_amount }}</span>
+            </div>
 
-<!-- Progress bar -->
+            <!-- Progress bar -->
+            <div class="w-full bg-gray-200 rounded-full h-3">
+                <div class="bg-teal-500 h-3 rounded-full transition-all"
+                    style="width: {{ campaign.progress }}%; max-width: 100%;">
+                </div>
+            </div>
 
-<div class="pt-2">
+            <!-- Stats row -->
+            <div class="flex justify-between text-sm text-gray-500">
+                <span>{{ campaign.progress }}% funded</span>
+                <span>{{ campaign.donor_count }} supporters</span>
+            </div>
 
-<div class="w-full bg-gray-200 rounded-full h-3">
+            <!-- Donate button -->
+            {% if user.is_authenticated %}
+                <a href="{% url 'donate' campaign.id %}"
+                    class="block text-center bg-teal-500 hover:bg-teal-600 text-white px-6 py-3 rounded-xl font-semibold transition">
+                    Donate Now
+                </a>
+            {% else %}
+                <a href="{% url 'login' %}"
+                    class="block text-center bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-xl font-semibold transition">
+                    Login to Donate
+                </a>
+            {% endif %}
 
-<div class="bg-teal-500 h-3 rounded-full"
+            <!-- Share button -->
+            
+            <button onclick="navigator.clipboard.writeText(window.location.href);
+                        this.innerText='Link copied!';"
+                class="w-full text-center border border-gray-200 hover:border-teal-400 text-gray-600 hover:text-teal-600 px-6 py-2 rounded-xl text-sm transition">
+                <i class="fa-solid fa-share-nodes mr-2"></i>Share Campaign
+            </button>
 
-style="width: {{ campaign.progress }}%">
+            <hr class="border-gray-100">
 
-</div>
+            <!-- Recent donors -->
+            <div>
+                <h3 class="font-semibold mb-3 text-gray-800">
+                    <i class="fa-solid fa-heart text-teal-500 mr-1"></i>
+                    Recent Supporters
+                </h3>
 
-</div>
+                {% for d in donations %}
+                <div class="flex items-center gap-3 mb-3">
+                    
+                    <div class="donor-avatar">
+                        {{ d.donor.username|first|upper }}
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-700">
+                            {{ d.donor.username }}
+                            <span class="text-teal-600">₹{{ d.amount }}</span>
+                        </p>
+                        <p class="text-xs text-gray-400">
+                            {{ d.donated_at|timesince }} ago
+                        </p>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-sm text-gray-400 text-center py-4">
+                    <i class="fa-solid fa-seedling text-teal-400 mr-1"></i>
+                    Be the first to support this campaign!
+                </p>
+                {% endfor %}
+            </div>
 
-</div>
-
-
-<!-- Amount display -->
-
-<div class="flex justify-between mt-2 font-semibold">
-
-<span>
-Raised ₹{{ campaign.amount_raised }}
-</span>
-
-<span>
-Goal ₹{{ campaign.goal_amount }}
-</span>
-
-</div>
-
-
-<!-- Donate button -->
-
-<a href="{% url 'donate' campaign.id %}"
-
-class="block text-center bg-teal-500 hover:bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold transition">
-
-Donate Now
-
-</a>
-
-
-<!-- Donors -->
-
-<div class="mt-6">
-
-<h3 class="font-semibold mb-2">
-
-Recent supporters
-
-</h3>
-
-
-{% for d in donations %}
-
-<p class="text-sm">
-
-{{ d.donor.username }} donated ₹{{ d.amount }}
-
-<span class="text-gray-400 text-xs">
-
-({{ d.donated_at|timesince }} ago)
-
-</span>
-
-</p>
-
-{% empty %}
-
-<p class="text-sm text-gray-500">
-
-Be the first donor 🙌
-
-</p>
-
-{% endfor %}
-
-</div>
-
-</div>
-
-</div>
-
+        </div>
+    </div>
 </section>
 
 {% endblock %}

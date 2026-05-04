@@ -7,20 +7,24 @@ from django.contrib.auth import login, logout, authenticate
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Sum
+from .forms import CampaignForm, DonationForm
 import razorpay
+
+
 
 
 # ---------------- HOME ----------------
 def home(request):
     campaigns = Campaign.objects.all()[:6]
-
-    for c in campaigns:
-        total = Donation.objects.filter(campaign=c).aggregate(total=Sum('amount'))['total'] or 0
-        c.amount_raised = total
-
-        c.progress = (total / c.goal_amount) * 100 if c.goal_amount > 0 else 0
-
     return render(request, 'campaigns/home.html', {
+        'campaigns': campaigns
+    })
+
+
+# ---------------- EXPLORE ----------------
+def explore(request):
+    campaigns = Campaign.objects.all()
+    return render(request, 'campaigns/explore.html', {
         'campaigns': campaigns
     })
 
@@ -28,11 +32,6 @@ def home(request):
 # ---------------- CAMPAIGN DETAIL ----------------
 def campaign_detail(request, campaign_id):
     campaign = get_object_or_404(Campaign, id=campaign_id)
-
-    total = Donation.objects.filter(campaign=campaign).aggregate(total=Sum('amount'))['total'] or 0
-    campaign.amount_raised = total
-
-    campaign.progress = (total / campaign.goal_amount) * 100 if campaign.goal_amount > 0 else 0
 
     donations = Donation.objects.filter(
         campaign=campaign
@@ -44,31 +43,22 @@ def campaign_detail(request, campaign_id):
     })
 
 
-# ---------------- EXPLORE ----------------
-def explore(request):
-    campaigns = Campaign.objects.all()
-
-    for c in campaigns:
-        total = Donation.objects.filter(campaign=c).aggregate(total=Sum('amount'))['total'] or 0
-        c.amount_raised = total
-
-        c.progress = (total / c.goal_amount) * 100 if c.goal_amount > 0 else 0
-
-    return render(request, 'campaigns/explore.html', {
-        'campaigns': campaigns
-    })
-
-
 # ---------------- LOGIN ----------------
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
-
         user = authenticate(request, username=username, password=password)
 
         if user:
             login(request, user)
+
+            if not request.POST.get('remember_me'):
+                request.session.set_expiry(0)
+
             messages.success(request, "Login successful")
             return redirect('home')
         else:
@@ -79,6 +69,9 @@ def login_view(request):
 
 # ---------------- REGISTER ----------------
 def register(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
     if request.method == "POST":
         username = request.POST.get('username')
         email = request.POST.get('email')
@@ -97,8 +90,15 @@ def register(request):
             messages.error(request, "Email already registered")
             return redirect('register')
 
-        user = User.objects.create_user(username=username, email=email, password=password)
+        if len(password) < 8:
+            messages.error(request, "Password must be at least 8 characters")
+            return redirect('register')
 
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
         login(request, user)
         messages.success(request, "Account created successfully")
         return redirect('home')
@@ -112,30 +112,39 @@ def donate(request, campaign_id):
     campaign = get_object_or_404(Campaign, id=campaign_id)
 
     if request.method == "POST":
-        amount_rupees = int(request.POST.get("amount"))
-        amount_paise = amount_rupees * 100
+        form = DonationForm(request.POST)
 
-        # ✅ STORE IN SESSION
-        request.session['campaign_id'] = campaign.id
-        request.session['amount'] = amount_rupees
+        if form.is_valid():
+            amount_rupees = int(form.cleaned_data['amount'])
+            amount_paise = amount_rupees * 100
 
-        client = razorpay.Client(auth=(
-            settings.RAZORPAY_KEY_ID,
-            settings.RAZORPAY_KEY_SECRET
-        ))
+            # store in session
+            request.session['campaign_id'] = campaign.id
+            request.session['amount'] = amount_rupees
 
-        order = client.order.create({
-            "amount": amount_paise,
-            "currency": "INR",
-            "payment_capture": 1
-        })
+            client = razorpay.Client(auth=(
+                settings.RAZORPAY_KEY_ID,
+                settings.RAZORPAY_KEY_SECRET
+            ))
 
-        return render(request, "campaigns/payment.html", {
-            "campaign": campaign,
-            "order_id": order["id"],
-            "amount": amount_paise,
-            "razorpay_key": settings.RAZORPAY_KEY_ID
-        })
+            order = client.order.create({
+                "amount": amount_paise,
+                "currency": "INR",
+                "payment_capture": 1
+            })
+
+            
+            callback_url = request.build_absolute_uri('/payment-success/')
+
+            return render(request, "campaigns/payment.html", {
+                "campaign": campaign,
+                "order_id": order["id"],
+                "amount": amount_paise,
+                "razorpay_key": settings.RAZORPAY_KEY_ID,
+                "callback_url": callback_url,
+            })
+        else:
+            messages.error(request, "Please enter a valid donation amount")
 
     return render(request, 'campaigns/donation_page.html', {
         'campaign': campaign
@@ -143,43 +152,85 @@ def donate(request, campaign_id):
 
 
 # ---------------- PAYMENT SUCCESS ----------------
-@csrf_exempt
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt  
 @login_required
 def payment_success(request):
-    payment_id = request.POST.get("razorpay_payment_id")
+    if request.method != "POST":
+        return redirect('home')
 
-    # ✅ GET FROM SESSION (RELIABLE)
+    payment_id = request.POST.get("razorpay_payment_id", "")
+    order_id = request.POST.get("razorpay_order_id", "")
+    signature = request.POST.get("razorpay_signature", "")
+
+    client = razorpay.Client(auth=(
+        settings.RAZORPAY_KEY_ID,
+        settings.RAZORPAY_KEY_SECRET
+    ))
+
+    
+    try:
+        client.utility.verify_payment_signature({
+            'razorpay_order_id': order_id,
+            'razorpay_payment_id': payment_id,
+            'razorpay_signature': signature,
+        })
+    except razorpay.errors.SignatureVerificationError:
+        messages.error(request, "Payment verification failed. Please contact support.")
+        return redirect('home')
+
+    # Get amount and campaign from session (safe — not from URL)
     campaign_id = request.session.get('campaign_id')
     amount = request.session.get('amount')
 
-    if campaign_id and amount:
-        campaign = get_object_or_404(Campaign, id=campaign_id)
+    if not campaign_id or not amount:
+        messages.error(request, "Session expired. Please try donating again.")
+        return redirect('home')
 
-        Donation.objects.create(
-            campaign=campaign,
-            donor=request.user,
-            amount=amount
-        )
+    campaign = get_object_or_404(Campaign, id=campaign_id)
 
-        # OPTIONAL: clear session
-        del request.session['campaign_id']
-        del request.session['amount']
+    # Store donation
+    donation = Donation.objects.create(
+        campaign=campaign,
+        donor=request.user,
+        amount=amount,
+        order_id=order_id,
+        payment_id=payment_id,
+    )
+
+
+
+    # Clear session
+    del request.session['campaign_id']
+    del request.session['amount']
+
+    messages.success(request, "Thank you for your donation!")
 
     return render(request, 'campaigns/payment_success.html', {
-        'payment_id': payment_id
+        'donation': donation,
+        'campaign': campaign,
+        'payment_id': payment_id,
+        'campaign': campaign,
+        'amount': amount,
     })
+
 
 
 # ---------------- LOGOUT ----------------
 def logout_view(request):
-    logout(request)
-    messages.success(request, "Logged out successfully")
+    if request.method == "POST":
+        logout(request)
+        messages.success(request, "Logged out successfully")
     return redirect('home')
 
 
-# ---------------- CREATE CAMPAIGN ----------------
-from .forms import CampaignForm
+#----------------- ABOUT ------------------
+def about(request):
+    return render(request, 'campaigns/about.html')
 
+
+# ---------------- CREATE CAMPAIGN ----------------
 @login_required
 def create_campaign(request):
     if request.method == 'POST':
@@ -189,9 +240,10 @@ def create_campaign(request):
             campaign = form.save(commit=False)
             campaign.creator = request.user
             campaign.save()
-
-            messages.success(request, "Campaign created successfully")
-            return redirect('home')
+            messages.success(request, "Campaign created successfully!")
+            return redirect('campaign_detail', campaign_id=campaign.id)
+        else:
+            messages.error(request, "Please fix the errors below.")
     else:
         form = CampaignForm()
 

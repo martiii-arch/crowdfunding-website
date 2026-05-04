@@ -1,157 +1,114 @@
 {% extends 'campaigns/base.html' %}
 
-{% block title %}
-Campaigns | Crowdfunding
-{% endblock %}
+{% block title %}Explore Campaigns | CrowdSpark{% endblock %}
 
 {% block content %}
 
-<style>
+<div class="max-w-7xl mx-auto px-4 py-12">
+
+    <!-- Header -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">
+            <i class="fa-solid fa-compass text-teal-500 mr-2"></i>Explore Campaigns
+        </h1>
+        <p class="text-gray-500 text-lg">
+            Discover projects that need your support
+        </p>
+    </div>
+
+    <!-- Campaign Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        {% for campaign in campaigns %}
+
+        <div class="bg-white rounded-2xl shadow-sm hover:shadow-lg
+                    transition-all duration-200 overflow-hidden
+                    hover:transform hover:scale-105">
+
+            <!-- Image -->
+            {% if campaign.image %}
+            <img src="{{ campaign.image.url }}"
+                class="w-full h-48 object-cover"
+                alt="{{ campaign.title }}">
+            {% else %}
+            <div class="w-full h-48 bg-gradient-to-br from-teal-100 to-teal-200
+                        flex items-center justify-center">
+                <i class="fa-solid fa-image text-4xl text-teal-400"></i>
+            </div>
+            {% endif %}
+
+            <!-- Content -->
+            <div class="p-5">
+
+                <h2 class="text-lg font-bold text-gray-800 mb-2
+                          line-clamp-2 hover:text-teal-600 transition">
+                    {{ campaign.title }}
+                </h2>
+
+                <p class="text-sm text-gray-500 mb-3 line-clamp-2">
+                    {{ campaign.description|truncatechars:100 }}
+                </p>
+
+                <!-- Progress -->
+                <div class="mb-3">
+                    <div class="w-full bg-gray-100 rounded-full h-2.5 mb-1">
+                        <div class="bg-teal-500 h-2.5 rounded-full transition-all"
+                            style="width: {{ campaign.progress }}%; max-width: 100%;">
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500">
+                        <span>{{ campaign.progress }}% funded</span>
+                        <span>{{ campaign.donor_count }} supporters</span>
+                    </div>
+                </div>
+
+                <!-- Amount -->
+                <div class="bg-gray-50 rounded-lg p-2.5 mb-4 text-center">
+                    <p class="text-2xl font-bold text-teal-600">
+                        ₹{{ campaign.amount_raised }}
+                    </p>
+                    <p class="text-xs text-gray-500">
+                        of ₹{{ campaign.goal_amount }}
+                    </p>
+                </div>
+
+                <!-- Button -->
+                <a href="{% url 'campaign_detail' campaign.id %}"
+                    class="block w-full text-center bg-teal-500 hover:bg-teal-600
+                           text-white px-4 py-2.5 rounded-xl font-medium
+                           transition">
+                    View Campaign
+                </a>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <!-- ✅ ADDED: empty state — no more blank page #}
+
+        <div class="col-span-full">
+            <div class="text-center py-16">
+                <i class="fa-solid fa-inbox text-6xl text-gray-200 mb-4"></i>
+                <h3 class="text-2xl font-bold text-gray-700 mb-2">
+                    No campaigns yet
+                </h3>
+                <p class="text-gray-500 mb-6">
+                    Be the first to start a campaign and make a difference!
+                </p>
+                <a href="{% url 'create_campaign' %}"
+                    class="inline-block bg-teal-500 hover:bg-teal-600
+                           text-white px-6 py-3 rounded-xl font-medium
+                           transition">
+                    <i class="fa-solid fa-plus mr-2"></i>Start a Campaign
+                </a>
+            </div>
+        </div>
 
-.header{
-background:#0077cc;
-color:white;
-padding:15px;
-text-align:center;
-}
+        {% endfor %}
 
-.campaign-list{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-gap:20px;
-padding:20px;
-}
-
-.campaign-card{
-background:white;
-padding:15px;
-border-radius:10px;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
-transition:0.2s;
-}
-
-.campaign-card:hover{
-transform:translateY(-3px);
-box-shadow:0 8px 20px rgba(0,0,0,0.1);
-}
-
-.progress{
-background:#eee;
-border-radius:10px;
-overflow:hidden;
-height:15px;
-margin:10px 0;
-}
-
-.progress-bar{
-background:#28a745;
-height:100%;
-}
-
-</style>
-
-
-<!-- Success messages -->
-
-{% if messages %}
-
-<div class="max-w-6xl mx-auto mt-4">
-
-{% for message in messages %}
-
-<div class="bg-green-100 text-green-700 px-4 py-2 rounded mb-2">
-
-{{ message }}
-
-</div>
-
-{% endfor %}
-
-</div>
-
-{% endif %}
-
-
-<div class="header">
-
-<h1>Crowdfunding Campaigns</h1>
-
-</div>
-
-
-<div class="campaign-list">
-
-{% for campaign in campaigns %}
-
-<div class="campaign-card">
-
-<h2 class="text-xl font-semibold">
-
-{{ campaign.title }}
-
-</h2>
-
-
-{% if campaign.image %}
-
-<img src="{{ campaign.image.url }}"
-
-style="width:100%; border-radius:10px; margin:10px 0;">
-
-{% endif %}
-
-
-<p class="text-gray-600">
-
-{{ campaign.description|truncatechars:120 }}
-
-</p>
-
-
-<p>
-
-<b>Goal:</b> ₹{{ campaign.goal_amount }}
-
-</p>
-
-
-<p>
-
-<b>Raised:</b> ₹{{ campaign.amount_raised }}
-
-</p>
-
-
-<div class="progress">
-
-<div class="progress-bar"
-
-style="width: {{ campaign.progress|default:0 }}%">
-
-</div>
-
-</div>
-
-
-<p style="font-size:13px;color:gray;">
-
-{{ campaign.progress|floatformat:0 }}% funded
-
-</p>
-
-
-<a href="{% url 'campaign_detail' campaign.id %}"
-
-class="inline-block mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-
-View Campaign
-
-</a>
-
-
-</div>
-
-{% endfor %}
+    </div>
 
 </div>
 

@@ -1,0 +1,366 @@
+{% extends 'campaigns/base.html' %}
+
+{% load static %}
+
+{% block title %}About Us | CrowdSpark{% endblock %}
+
+{% block content %}
+
+
+<!-- ========== HERO SECTION ========== -->
+<section class="bg-gradient-to-br from-blue-50 to-white py-16">
+    
+    <!-- Decorative elements -->
+    <div class="absolute top-0 right-0 w-96 h-96 bg-teal-200 rounded-full opacity-20 blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-blue-200 rounded-full opacity-20 blur-3xl"></div>
+    
+    <div class="max-w-4xl mx-auto text-center relative z-10 mt-20">
+        <h1 class="text-5xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight">
+            Empowering People Through
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600">
+                Crowdfunding
+            </span>
+        </h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed mt-16">
+            We believe everyone deserves the chance to turn their dreams into reality. 
+            CrowdSpark connects people with compassionate supporters to make meaningful change happen.
+        </p>
+        <div class="mt-16">
+            <div class="mt-8 flex justify-center gap-4 mt-">
+            <a href="{% url 'create_campaign' %}" 
+               class="bg-teal-500 hover:bg-teal-600 text-white px-8 py-3 rounded-xl 
+                      font-semibold transition shadow-lg hover:shadow-xl">
+                Start Your Campaign
+            </a>
+            <a href="{% url 'explore' %}" 
+               class="bg-white hover:bg-gray-50 text-gray-700 px-8 py-3 rounded-xl 
+                      font-semibold transition border border-gray-200">
+                Explore Campaigns
+            </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== MISSION SECTION ========== -->
+<section class="max-w-6xl mx-auto px-4 py-20">
+    <div class="grid md:grid-cols-2 gap-12 mt-20 items-center">
+        <div>
+            <h2 class="text-4xl font-bold text-gray-800 mb-6">
+                Our Mission
+            </h2>
+            <div class="space-y-4 text-gray-600 leading-relaxed">
+                <p>
+                    CrowdSpark was founded on a simple belief: when people come together, 
+                    incredible things happen. We've created a platform where anyone can 
+                    raise funds for what matters most to them — whether it's medical emergencies, 
+                    education, creative projects, or community initiatives.
+                </p>
+                <p>
+                    Every day, thousands of people turn to crowdfunding to overcome challenges, 
+                    pursue their passions, and make a difference. We're here to make that journey 
+                    as simple, secure, and impactful as possible.
+                </p>
+                <p>
+                    Our platform is built on trust, transparency, and the power of human kindness. 
+                    We're not just facilitating donations — we're building a community of changemakers.
+                </p>
+            </div>
+        </div>
+        <div class="relative">
+            <div class="bg-gradient-to-br from-teal-100 to-blue-100 rounded-3xl p-8 h-96 
+                        flex items-center justify-center">
+                <i class="fa-solid fa-hands-holding-circle text-teal-500 text-9xl opacity-30"></i>
+            </div>
+            <!-- Floating stats cards -->
+            <div class="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-xl p-4">
+                <p class="text-sm text-gray-500">Campaigns Created</p>
+                <p class="text-2xl font-bold text-teal-600">5,000+</p>
+            </div>
+            <div class="absolute -top-6 -right-6 bg-white rounded-2xl shadow-xl p-4">
+                <p class="text-sm text-gray-500">Lives Impacted</p>
+                <p class="text-2xl font-bold text-blue-600">20,000+</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== HOW IT WORKS SECTION ========== -->
+<section class="bg-gray-50 py-20 px-4">
+    <div class="max-w-6xl mx-auto mt-20">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">
+                How It Works
+            </h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Starting a campaign on CrowdSpark is simple. Follow these four steps 
+                to turn your vision into reality.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-8">
+            
+            <!-- Step 1 -->
+            <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition group">
+                <div class="w-16 h-16 bg-teal-100 rounded-2xl flex items-center justify-center mb-6 
+                            group-hover:bg-teal-500 transition">
+                    <i class="fa-solid fa-pen-to-square text-3xl text-teal-500 group-hover:text-white transition"></i>
+                </div>
+                <div class="text-teal-600 font-semibold mb-2">Step 1</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Create a Campaign</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Share your story, set your goal, and add photos that bring your cause to life.
+                </p>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition group">
+                <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 
+                            group-hover:bg-blue-500 transition">
+                    <i class="fa-solid fa-share-nodes text-3xl text-blue-500 group-hover:text-white transition"></i>
+                </div>
+                <div class="text-blue-600 font-semibold mb-2">Step 2</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Share Your Story</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Spread the word on social media, email, and with your community to reach supporters.
+                </p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition group">
+                <div class="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center mb-6 
+                            group-hover:bg-indigo-500 transition">
+                    <i class="fa-solid fa-hand-holding-heart text-3xl text-indigo-500 group-hover:text-white transition"></i>
+                </div>
+                <div class="text-indigo-600 font-semibold mb-2">Step 3</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Receive Donations</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Accept secure donations from supporters around the world, with no platform fees.
+                </p>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition group">
+                <div class="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mb-6 
+                            group-hover:bg-emerald-500 transition">
+                    <i class="fa-solid fa-rocket text-3xl text-emerald-500 group-hover:text-white transition"></i>
+                </div>
+                <div class="text-emerald-600 font-semibold mb-2">Step 4</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Make an Impact</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Use the funds to achieve your goal and share updates with your supporters.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ========== TRUST & SAFETY SECTION ========== -->
+<section class="max-w-6xl mx-auto px-4 py-20">
+    <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold text-gray-800 mb-4">
+            Trust & Safety
+        </h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+            Your security is our priority. We've built CrowdSpark with industry-leading 
+            safeguards to protect both campaigners and donors.
+        </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+        
+        <!-- Secure Payments -->
+        <div class="bg-white border border-gray-100 rounded-2xl p-8 hover:shadow-lg transition">
+            <div class="w-14 h-14 bg-teal-50 rounded-xl flex items-center justify-center mb-5">
+                <i class="fa-solid fa-shield-halved text-2xl text-teal-500"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-3">Secure Payments</h3>
+            <p class="text-gray-600 leading-relaxed">
+                All transactions are encrypted and processed through Razorpay, 
+                ensuring your financial data stays protected.
+            </p>
+        </div>
+
+        <!-- Verified Campaigns -->
+        <div class="bg-white border border-gray-100 rounded-2xl p-8 hover:shadow-lg transition">
+            <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center mb-5">
+                <i class="fa-solid fa-circle-check text-2xl text-blue-500"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-3">Verified Campaigns</h3>
+            <p class="text-gray-600 leading-relaxed">
+                We review campaigns to ensure authenticity and provide badges 
+                for verified causes and organizations.
+            </p>
+        </div>
+
+        <!-- 24/7 Support -->
+        <div class="bg-white border border-gray-100 rounded-2xl p-8 hover:shadow-lg transition">
+            <div class="w-14 h-14 bg-indigo-50 rounded-xl flex items-center justify-center mb-5">
+                <i class="fa-solid fa-headset text-2xl text-indigo-500"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-3">24/7 Support</h3>
+            <p class="text-gray-600 leading-relaxed">
+                Our dedicated team is always available to help you navigate challenges 
+                and answer questions.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+<!-- ========== IMPACT SECTION ========== -->
+ <div class="mt-20">
+<section class="bg-gradient-to-br from-teal-500 to-blue-600 py-20 px-4 text-white">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-4">
+                Our Impact in Numbers
+            </h2>
+            <p class="text-lg text-teal-100 max-w-2xl mx-auto">
+                Every number represents a life changed, a dream achieved, or a community strengthened.
+            </p>
+        </div>
+        <div class="grid md:grid-cols-4 gap-8">
+            
+            <div class="text-center">
+                <div class="text-5xl font-bold mb-2">₹15Cr+</div>
+                <div class="text-teal-100">Total Funds Raised</div>
+            </div>
+
+            <div class="text-center">
+                <div class="text-5xl font-bold mb-2">5,000+</div>
+                <div class="text-teal-100">Campaigns Created</div>
+            </div>
+
+            <div class="text-center">
+                <div class="text-5xl font-bold mb-2">20,000+</div>
+                <div class="text-teal-100">Lives Impacted</div>
+            </div>
+
+            <div class="text-center">
+                <div class="text-5xl font-bold mb-2">15+</div>
+                <div class="text-teal-100">Countries Reached</div>
+            </div>
+
+        </div>
+    </div>
+</section>
+</div>
+
+<!-- ========== STORY SECTION ========== -->
+<div class="mt-20">
+    <section class="max-w-6xl mx-auto px-4 py-20">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div class="order-2 md:order-1">
+            <div class="bg-gradient-to-br from-blue-100 to-indigo-100 rounded-3xl p-0 h-96 
+                        flex items-center justify-center relative overflow-hidden">
+                <i ><img src="{% static 'images/ourstory.jpg' %}" alt="ourstory"></i>
+                <div class="absolute bottom-6 left-6 bg-white rounded-xl shadow-lg p-4">
+                    <p class="text-sm text-gray-500">Founded in</p>
+                    <p class="text-2xl font-bold text-blue-600">2025</p>
+                </div>
+            </div>
+        </div>
+        <div class="order-1 md:order-2">
+            <h2 class="text-4xl font-bold text-gray-800 mb-6">
+                Our Story
+            </h2>
+            <div class="space-y-4 text-gray-600 leading-relaxed">
+                <p>
+                    CrowdSpark was born from a simple observation: people want to help each other, 
+                    but they need the right tools to do so effectively. Our founders witnessed 
+                    countless individuals struggling to raise funds for critical needs, while 
+                    potential supporters had no easy way to contribute.
+                </p>
+                <p>
+                    We set out to bridge that gap. What started as a small project has grown 
+                    into a platform that has helped hundreds of thousands of people achieve their goals, 
+                    from life-saving medical treatments to educational opportunities and creative ventures.
+                </p>
+                <p>
+                    Today, CrowdSpark stands as a testament to the power of community and compassion. 
+                    Every campaign tells a story, and we're honored to be part of making those stories 
+                    come true.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
+
+<!-- ========== VALUES SECTION ========== -->
+<div class="mt-19">
+<section class="bg-gray-50 py-20 px-4">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">
+                Our Core Values
+            </h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                These principles guide everything we do at CrowdSpark.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 mt-20">
+            
+            <div class="bg-white rounded-2xl p-8 text-center hover:shadow-lg transition">
+                <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                    <i class="fa-solid fa-heart text-2xl text-teal-500"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Compassion</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Every campaign represents someone's hope. We approach our work with empathy and care.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-8 text-center hover:shadow-lg transition">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                    <i class="fa-solid fa-scale-balanced text-2xl text-blue-500"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Transparency</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    We believe in open communication, clear pricing, and honest relationships.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-8 text-center hover:shadow-lg transition">
+                <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                    <i class="fa-solid fa-users text-2xl text-indigo-500"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Community</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Together, we're stronger. We foster connections that create lasting positive change.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+</div>
+<!-- ========== FINAL CTA SECTION ========== -->
+<section class="max-w-4xl mx-auto px-4 py-20 text-center">
+    <div class="bg-gradient-to-br from-teal-50 to-blue-50 rounded-3xl p-12">
+        <h2 class="text-4xl font-bold text-gray-800 mb-4">
+            Ready to Make a Difference?
+        </h2>
+        <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+            Whether you're looking to start a campaign or support an existing cause, 
+            CrowdSpark makes it easy to create meaningful change.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'create_campaign' %}" 
+               class="bg-teal-500 hover:bg-teal-600 text-white px-8 py-4 rounded-xl 
+                      font-semibold transition shadow-lg hover:shadow-xl inline-flex items-center justify-center">
+                <i class="fa-solid fa-plus mr-2"></i>Start Your Campaign
+            </a>
+            <a href="{% url 'explore' %}" 
+               class="bg-white hover:bg-gray-50 text-gray-700 px-8 py-4 rounded-xl 
+                      font-semibold transition border border-gray-200 inline-flex items-center justify-center">
+                <i class="fa-solid fa-compass mr-2"></i>Explore Campaigns
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

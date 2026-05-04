@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator
+from django.db.models import Sum
 
 
 class Campaign(models.Model):
@@ -10,13 +12,8 @@ class Campaign(models.Model):
 
     goal_amount = models.DecimalField(
         max_digits=10,
-        decimal_places=2
-    )
-
-    amount_raised = models.DecimalField(
-        max_digits=10,
         decimal_places=2,
-        default=0
+        validators=[MinValueValidator(1)]  
     )
 
     creator = models.ForeignKey(
@@ -25,9 +22,7 @@ class Campaign(models.Model):
         related_name="campaigns"
     )
 
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
+    created_at = models.DateTimeField(auto_now_add=True)
 
     image = models.ImageField(
         upload_to='campaign_images/',
@@ -35,22 +30,25 @@ class Campaign(models.Model):
         null=True
     )
 
-    
+    # amount_raised is calculated dynamically
+    @property
+    def amount_raised(self):
+        total = self.donations.aggregate(Sum('amount'))['amount__sum']
+        return total or 0
+
+    #  progress capped at 100 
+    @property
     def progress(self):
-
         if self.goal_amount > 0:
-            return int((self.amount_raised / self.goal_amount) * 100)
-
+            raw = (self.amount_raised / self.goal_amount) * 100
+            return min(int(raw), 100)
         return 0
 
     def donor_count(self):
-
         return self.donations.count()
 
     def __str__(self):
-
         return self.title
-
 
 
 class Donation(models.Model):
@@ -63,21 +61,22 @@ class Donation(models.Model):
 
     donor = models.ForeignKey(
         User,
-        on_delete=models.CASCADE
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="donations"
     )
 
     amount = models.DecimalField(
         max_digits=10,
-        decimal_places=2
+        decimal_places=2,
+        validators=[MinValueValidator(1)]
     )
 
-    # ✅ ADD THESE TWO
     order_id = models.CharField(max_length=255, null=True, blank=True)
     payment_id = models.CharField(max_length=255, null=True, blank=True)
 
-    donated_at = models.DateTimeField(
-        auto_now_add=True
-    )
+    donated_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.donor.username} donated {self.amount}"
+        donor_name = self.donor.username if self.donor else "Deleted user"
+        return f"{donor_name} donated ₹{self.amount}"

@@ -2,30 +2,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}CrowdSpark{% endblock %}</title>
 
-    
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-    
-
-  
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     {% block extra_css %}{% endblock %}
-</head>
-<style>
+
+    <style>
         * { font-family: 'Inter', system-ui, sans-serif; }
         body { background-color: #fbfdff; }
         .glass-morph {
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255,255,255,0.5);
+        }
+        body {
+            user-select: none;
+        }
+
+        input, textarea {
+            user-select: text;
         }
         .hover-lift {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -71,7 +72,6 @@
             box-shadow: 0 8px 28px -8px rgba(0, 30, 40, 0.08);
             transition: all 0.2s;
         }
-        /* custom smooth category pill */
         .category-pill {
             background: #ecfdf5;
             color: #115e59;
@@ -84,9 +84,7 @@
             gap: 8px;
             transition: 0.2s;
         }
-        .category-pill:hover {
-            background: #d1fae5;
-        }
+        .category-pill:hover { background: #d1fae5; }
         .donor-avatar {
             width: 36px; height: 36px;
             background: #cbd5e0;
@@ -98,136 +96,121 @@
             font-weight: 600;
             font-size: 0.9rem;
         }
-        /* simple tab active state simulation (dashboard) */
-        .dashboard-tab {
-            border-bottom: 3px solid transparent;
-            padding-bottom: 0.5rem;
-            font-weight: 500;
-            color: #4b5563;
-        }
-        .dashboard-tab.active {
-            border-bottom-color: #0f2b3c;
-            color: #0f2b3c;
-        }
-        /* for demo: some fixed heights, consistent */
         .campaign-img {
             height: 200px;
             object-fit: cover;
             border-radius: 20px 20px 0 0;
         }
-
-        /*create campaign */
-        input, textarea {
-         width: 100%;
-        padding: 10px;
-         margin: 8px 0 15px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        font-size: 14px;
+        .errorlist {
+            background: #fee2e2;
+            color: #b91c1c;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            margin: 0.3rem 0 0 0;
+            list-style: none;
         }
-
-        label {
-        font-weight: bold;
-        display: block;
-        margin-top: 10px;
-        }
-
-        button {
-        cursor: pointer;
-        }
-
-        .card {
-        background: white;
-        padding: 20px;
-        margin-top: 20px;
-        border-radius: 10px;
-        box-shadow: 0px 0px 10px #ccc;
-}
-        .btn {
-    background: #27ae60;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 6px;
-}
         footer a { color: #94a3b8; transition: color 0.2s; }
         footer a:hover { color: #2dd4bf; }
     </style>
+</head>
 
 <body class="antialiased text-gray-800">
 
-
-<body class="antialiased text-gray-800">
-
-<!-- ========== REUSABLE NAVBAR ========== -->
+<!-- ========== NAVBAR ========== -->
 <nav class="sticky top-0 z-30 glass-morph py-3 px-6 md:px-10 flex items-center justify-between flex-wrap gap-4">
     <div class="flex items-center space-x-1">
         <i class="fa-solid fa-bolt text-3xl text-teal-600"></i>
         <span class="text-2xl font-bold tracking-tight text-gray-800">CrowdSpark</span>
     </div>
-   <div class="hidden md:flex items-center space-x-6 text-gray-700 font-medium">
 
-    <a href="{% url 'home' %}" class="hover:text-teal-700">Home</a>
+    <div class="hidden md:flex items-center space-x-6 text-gray-700 font-medium">
+        <a href="{% url 'home' %}" class="hover:text-teal-700">Home</a>
+        <a href="{% url 'explore' %}" class="hover:text-teal-700">Explore</a>
+        <a href="{% url 'create_campaign' %}" class="hover:text-teal-700">Create Campaign</a>
+        <a href="{% url 'about' %}" class="hover:text-teal-700">About</a>
 
-    <a href="{% url 'explore' %}" class="hover:text-teal-700">Explore</a>
+    </div>
 
-    <a href="#" class="hover:text-teal-700">Categories</a>
+    <div class="flex items-center space-x-3">
+        {% if user.is_authenticated %}
+            <span class="text-gray-700 text-sm">
+                Hello, {{ user.username }}
+            </span>
 
-    <a href="#" class="hover:text-teal-700">About</a>
-
-    <a href="{% url 'create_campaign' %}">Create Campaign</a>
-</div>
-
-<div class="flex items-center space-x-3">
-
-  {% if user.is_authenticated %}
-
-<span class="mr-3 text-gray-700">
-
-Hello {{ user.username }}
-
-</span>
-
-<a href="{% url 'logout' %}"
-
-class="bg-slate-800 text-white px-4 py-2 rounded">
-
-Logout
-
-</a>
-
-{% else %}
-
-<a href="{% url 'login' %}"
-
-class="mr-3">
-
-Login
-
-</a>
-
-<a href="{% url 'register' %}"
-
-class="bg-slate-800 text-white px-4 py-2 rounded">
-
-Register
-
-</a>
-
-{% endif %}
-</div>
+            <form method="POST" action="{% url 'logout' %}" class="inline">
+                {% csrf_token %}
+                <button type="submit"
+                    class="bg-slate-800 text-white px-4 py-2 rounded text-sm hover:bg-slate-700 transition">
+                    Logout
+                </button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}" class="text-gray-700 hover:text-teal-700 font-medium">
+                Login
+            </a>
+            <a href="{% url 'register' %}"
+                class="bg-slate-800 text-white px-4 py-2 rounded text-sm hover:bg-slate-700 transition">
+                Register
+            </a>
+        {% endif %}
+    </div>
 </nav>
+
+{% if messages %}
+<div class="max-w-5xl mx-auto mt-4 px-4">
+    {% for message in messages %}
+    <div class="px-4 py-3 rounded-lg mb-2 text-sm font-medium
+        {% if message.tags == 'error' %}bg-red-100 text-red-700
+        {% elif message.tags == 'success' %}bg-green-100 text-green-700
+        {% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-700
+        {% else %}bg-blue-100 text-blue-700{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 {% block content %}{% endblock %}
 
-<!-- Footer -->
+<!-- ========== FOOTER ========== -->
 <footer class="bg-[#0b1c24] text-white mt-20 py-12 px-6 md:px-12 rounded-t-[48px]">
     <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-10">
-        <div><i class="fa-solid fa-bolt text-3xl text-teal-400"></i><span class="text-2xl font-bold ml-1">CrowdSpark</span><p class="text-sm text-gray-400 mt-3">Ignite change, spark hope. Low fees, global reach.</p></div>
-        <div><h5 class="font-semibold text-lg">Explore</h5><ul class="space-y-2 mt-3 text-gray-400"><li>Home</li><li>How it works</li><li>Categories</li></ul></div>
-        <div><h5 class="font-semibold text-lg">Support</h5><ul class="space-y-2 mt-3 text-gray-400"><li>Help center</li><li>Trust & safety</li><li>Contact</li></ul></div>
-        <div><h5 class="font-semibold text-lg">Social</h5><div class="flex space-x-5 mt-4 text-2xl"><i class="fa-brands fa-twitter hover:text-teal-400"></i><i class="fa-brands fa-instagram hover:text-teal-400"></i><i class="fa-brands fa-linkedin hover:text-teal-400"></i><i class="fa-brands fa-facebook hover:text-teal-400"></i></div></div>
+        <div>
+            <i class="fa-solid fa-bolt text-3xl text-teal-400"></i>
+            <span class="text-2xl font-bold ml-1">CrowdSpark</span>
+            <p class="text-sm text-gray-400 mt-3">Ignite change, spark hope. Low fees, global reach.</p>
+        </div>
+        <div>
+            <h5 class="font-semibold text-lg">Explore</h5>
+            <ul class="space-y-2 mt-3 text-gray-400">
+                <li><a href="{% url 'home' %}" class="hover:text-teal-400">Home</a></li>
+                <li><a href="{% url 'explore' %}" class="hover:text-teal-400">Explore campaigns</a></li>
+                <li><a href="{% url 'create_campaign' %}" class="hover:text-teal-400">Start a campaign</a></li>
+                <li><a href="#" class="hover:text-teal-400">About</a></li>
+            </ul>
+        </div>
+        <div>
+            <h5 class="font-semibold text-lg">Account</h5>
+            <ul class="space-y-2 mt-3 text-gray-400">
+                <li><a href="{% url 'login' %}" class="hover:text-teal-400">Login</a></li>
+                <li><a href="{% url 'register' %}" class="hover:text-teal-400">Register</a></li>
+            </ul>
+        </div>
+        <div>
+            <h5 class="font-semibold text-lg">Social</h5>
+            <div class="flex space-x-5 mt-4 text-2xl">
+                <i class="fa-brands fa-twitter hover:text-teal-400 cursor-pointer"></i>
+                <i class="fa-brands fa-instagram hover:text-teal-400 cursor-pointer"></i>
+                <i class="fa-brands fa-linkedin hover:text-teal-400 cursor-pointer"></i>
+                <i class="fa-brands fa-facebook hover:text-teal-400 cursor-pointer"></i>
+            </div>
+        </div>
     </div>
-    <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-500 text-sm">© 2025 CrowdSpark – designed for changemakers.</div>
+    <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-500 text-sm">
+        
+        © 2026 CrowdSpark – designed for changemakers.
+    </div>
 </footer>
 
 {% block extra_js %}{% endblock %}
