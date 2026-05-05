@@ -347,11 +347,19 @@ def delete_campaign(request, id):
 
 from django.contrib.auth.models import User
 
+from django.http import HttpResponse
+from django.contrib.auth.models import User
+
+from django.http import HttpResponse
+from django.contrib.auth.models import User
+
 def create_admin(request):
-    if not User.objects.filter(username="admin").exists():
-        User.objects.create_superuser(
-            username="admin",
-            email="admin@gmail.com",
-            password="admin123"
-        )
-    return HttpResponse("Admin created")
+    User.objects.filter(username="martin").delete()  # delete if exists
+
+    User.objects.create_superuser(
+        username="martin",
+        email="martin@gmail.com",
+        password="martin123"
+    )
+
+    return HttpResponse("Admin recreated successfully")
