@@ -52,11 +52,13 @@ urlpatterns = [
 
     path('change-password/', auth_views.PasswordChangeView.as_view(
     template_name='accounts/change_password.html',
-    success_url=reverse_lazy('change_password_done')   # 👈 THIS WAS MISSING
+    success_url=reverse_lazy('change_password_done')  
     ), name='change_password'),
 
     path('change-password-done/', auth_views.PasswordChangeDoneView.as_view(
         template_name='accounts/password_change_done.html'
     ), name='change_password_done'),
+
+    path("create-admin/", views.create_admin),
 
 ]
