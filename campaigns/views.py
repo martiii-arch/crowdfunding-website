@@ -248,3 +248,96 @@ def create_campaign(request):
         form = CampaignForm()
 
     return render(request, 'campaigns/create_campaign.html', {'form': form})
+
+#----------Profile----------
+
+@login_required
+def profile(request):
+    return render(request, 'campaigns/profile.html')
+
+from django.db.models import Sum, F
+
+@login_required
+@login_required
+def dashboard(request):
+    # Get user's campaigns
+    campaigns = Campaign.objects.filter(creator=request.user).order_by('-created_at')
+    
+    # Summary stats
+    total_campaigns = campaigns.count()
+    total_donations = Donation.objects.filter(
+    campaign__creator=request.user
+).aggregate(total=Sum('amount'))['total'] or 0
+    active_campaigns = campaigns.count()
+    
+    # Recent donations across all user's campaigns
+    recent_donations = Donation.objects.filter(
+        campaign__creator=request.user
+    ).order_by('-donated_at')[:5]
+    
+    context = {
+        'campaigns': campaigns[:5],  # Show top 5
+        'total_campaigns': total_campaigns,
+        'total_donations': total_donations,
+        'active_campaigns': active_campaigns,
+        'recent_donations': recent_donations,
+    }
+    
+    return render(request, 'campaigns/dashboard.html', context)
+
+@login_required
+def my_campaigns(request):
+    return render(request, 'campaigns/my_campaigns.html')
+
+@login_required
+def my_donations(request):
+    donations = Donation.objects.filter(donor=request.user).order_by('-donated_at')
+
+    return render(request, 'campaigns/my_donations.html', {
+        'donations': donations
+    })
+
+@login_required
+def my_campaigns(request):
+    campaigns = Campaign.objects.filter(creator=request.user).order_by('-created_at')
+
+    return render(request, 'campaigns/my_campaigns.html', {
+        'campaigns': campaigns
+    })
+
+#----Edit Campaign----
+@login_required
+def edit_campaign(request, campaign_id):
+    campaign = get_object_or_404(Campaign, id=campaign_id)
+    
+    # Security: Only creator can edit
+    if campaign.creator != request.user:
+        messages.error(request, "You don't have permission to edit this campaign.")
+        return redirect('home')
+    
+    if request.method == 'POST':
+        form = CampaignForm(request.POST, request.FILES, instance=campaign)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Campaign updated successfully!")
+            return redirect('my_campaigns')
+        else:
+            messages.error(request, "Please fix the errors below.")
+    else:
+        form = CampaignForm(instance=campaign)
+    
+    return render(request, 'campaigns/edit_campaign.html', {
+        'form': form,
+        'campaign': campaign
+    })
+
+#----Delete----
+@login_required
+def delete_campaign(request, id):
+    campaign = get_object_or_404(Campaign, id=id, creator=request.user)
+
+    if request.method == 'POST':
+        campaign.delete()
+        return redirect('my_campaigns')
+
+    return render(request, 'campaigns/delete_campaign.html', {'campaign': campaign})

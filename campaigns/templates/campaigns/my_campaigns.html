@@ -1,0 +1,96 @@
+{% extends 'campaigns/base.html' %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-6 py-10">
+
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-white">My Campaigns</h1>
+
+        <a href="{% url 'create_campaign' %}"
+           class="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg">
+            + Create Campaign
+        </a>
+    </div>
+
+    {% if campaigns %}
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        {% for campaign in campaigns %}
+        <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700">
+
+            <!-- Image -->
+            {% if campaign.image %}
+                <img src="{{ campaign.image.url }}" 
+                     class="w-full h-40 object-cover rounded-lg mb-3">
+            {% endif %}
+
+            <!-- Title -->
+            <h2 class="text-lg font-semibold text-white">
+                {{ campaign.title }}
+            </h2>
+
+            <!-- Description -->
+            <p class="text-gray-400 text-sm mt-2 line-clamp-2">
+                {{ campaign.description }}
+            </p>
+
+            <!-- Goal -->
+            <div class="mt-3 text-sm text-gray-400">
+                Goal: ₹{{ campaign.goal_amount }}
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mt-3">
+                <div class="w-full bg-slate-700 rounded-full h-2">
+                    <div class="bg-teal-500 h-2 rounded-full"
+                         style="width: {{ campaign.progress }}%">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="mt-2 flex justify-between text-sm text-gray-400">
+                <span>Raised: ₹{{ campaign.amount_raised }}</span>
+                <span>{{ campaign.donor_count }} donors</span>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-4 flex justify-between items-center">
+
+                <a href="{% url 'campaign_detail' campaign.id %}"
+                   class="text-teal-400 hover:underline text-sm">
+                    View
+                </a>
+
+                <div class="flex gap-3">
+                    <a href="{% url 'edit_campaign' campaign.id %}"
+                        class="text-blue-400 hover:underline text-sm">
+                         Edit
+                    </a>
+
+                    <a href="{% url 'delete_campaign' campaign.id %}"
+                        class="text-red-400 hover:underline text-sm">
+                         Delete
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+        <div class="text-center text-gray-400 mt-20">
+            <p>You haven’t created any campaigns yet.</p>
+
+            <a href="{% url 'create_campaign' %}"
+               class="mt-4 inline-block bg-teal-500 px-5 py-2 rounded-lg text-white">
+                Create Your First Campaign
+            </a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

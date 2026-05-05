@@ -1,0 +1,46 @@
+{% extends 'campaigns/base.html' %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 px-6 py-10">
+
+    <!-- Title -->
+    <h2 class="text-3xl font-bold mb-6 text-center" style="color:#24324a;">
+        My Donations
+    </h2>
+
+    <!-- Table Container -->
+    <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
+
+        <!-- Header -->
+        <div class="grid grid-cols-3 px-6 py-3 text-white font-semibold"
+             style="background-color:#24324a;">
+            <span>Campaign</span>
+            <span>Amount</span>
+            <span>Date</span>
+        </div>
+
+        <!-- Data -->
+        {% if donations %}
+            {% for donation in donations %}
+            <div class="grid grid-cols-3 px-6 py-4 border-b hover:bg-gray-50 transition">
+                <span class="font-medium text-gray-800">
+                    {{ donation.campaign.title }}
+                </span>
+                <span class="text-green-800 font-semibold">
+                    ₹{{ donation.amount }}
+                </span>
+                <span class="text-gray-500">
+                    {{ donation.donated_at|date:"d M Y" }}
+                </span>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="text-center py-6 text-gray-500">
+                No donations yet.
+            </div>
+        {% endif %}
+
+    </div>
+
+</div>
+{% endblock %}

@@ -1,25 +1,247 @@
 {% extends 'campaigns/base.html' %}
 
+{% block title %}Dashboard | CrowdSpark{% endblock %}
+
 {% block content %}
 
-<section class="max-w-6xl mx-auto px-5 md:px-8 py-12 border-t border-gray-200">
-    <h2 class="text-3xl font-semibold mb-2">Your dashboard</h2>
-    <div class="flex space-x-8 border-b mb-6">
-        <span class="dashboard-tab active">My campaigns</span>
-        <span class="dashboard-tab">Donation history</span>
-        <span class="dashboard-tab">Profile settings</span>
+<!-- ========== DASHBOARD SECTION ========== -->
+<section class="bg-gray-50 min-h-screen py-12 px-4">
+    
+    <div class="max-w-7xl mx-auto">
+        
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-5xl font-bold text-gray-800 mb-2">Dashboard</h1>
+            <p class="text-gray-600">Welcome back, {{ request.user.username }}</p>
+        </div>
+        
+        <!-- ========== SUMMARY CARDS ========== -->
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            
+            <!-- Total Campaigns Card -->
+            <div class="bg-[#24324a] rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-white bg-opacity-10 rounded-xl">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="text-gray-300 text-sm font-medium mb-1">Total Campaigns</h3>
+                <p class="text-4xl font-bold text-white">{{ total_campaigns }}</p>
+                <p class="text-gray-400 text-xs mt-2">All time</p>
+            </div>
+            
+            <!-- Total Donations Card -->
+            <div class="bg-[#24324a] rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-white bg-opacity-10 rounded-xl">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="text-gray-300 text-sm font-medium mb-1">Total Raised</h3>
+                <p class="text-4xl font-bold text-white">₹{{ total_donations|floatformat:0 }}</p>
+                <p class="text-gray-400 text-xs mt-2">Across all campaigns</p>
+            </div>
+            
+            <!-- Active Campaigns Card -->
+            <div class="bg-[#24324a] rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-white bg-opacity-10 rounded-xl">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="text-gray-300 text-sm font-medium mb-1">Active Campaigns</h3>
+                <p class="text-4xl font-bold text-white">{{ active_campaigns }}</p>
+                <p class="text-gray-400 text-xs mt-2">Currently running</p>
+            </div>
+            
+        </div>
+        
+        <!-- ========== TWO COLUMN LAYOUT ========== -->
+        <div class="grid lg:grid-cols-3 gap-8">
+            
+            <!-- ========== LEFT COLUMN (2/3 WIDTH) ========== -->
+            <div class="lg:col-span-2 space-y-8">
+                
+                <!-- Campaign Performance Section -->
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-gray-800">Campaign Performance</h2>
+                        <a href="{% url 'my_campaigns' %}" class="text-[#24324a] hover:text-[#1a2434] text-sm font-medium transition">
+                            View All →
+                        </a>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        
+                        {% for campaign in campaigns %}
+                        <div class="border border-gray-200 rounded-xl p-5 hover:border-[#24324a] transition">
+                            
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex-1">
+                                    <h3 class="font-semibold text-gray-800 mb-1">{{ campaign.title }}</h3>
+                                    <p class="text-sm text-gray-500">Created {{ campaign.created_at|timesince }} ago</p>
+                                </div>
+                                <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                                    Active
+                                </span>
+                            </div>
+                            
+                            <!-- Progress Bar -->
+                            <div class="mb-3">
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="font-medium text-gray-700">
+                                        ₹{{ campaign.amount_raised|floatformat:0 }} raised
+                                    </span>
+                                    <span class="text-gray-500">
+                                        Goal: ₹{{ campaign.goal_amount|floatformat:0 }}
+                                    </span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                                    <div class="bg-[#24324a] h-3 rounded-full transition-all duration-500" 
+                                         style="width: {{ campaign.progress }}%; max-width: 100%;"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Stats Row -->
+                            <div class="flex items-center gap-4 text-sm text-gray-600">
+                                <div class="flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                    </svg>
+                                    <span>{{ campaign.donor_count }} supporters</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                                    </svg>
+                                    <span>{{ campaign.progress }}% funded</span>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-12">
+                            <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                            </svg>
+                            <p class="text-gray-500 mb-4">No campaigns yet</p>
+                            <a href="{% url 'create_campaign' %}" 
+                               class="inline-block bg-[#24324a] hover:bg-[#1a2434] text-white px-6 py-2 rounded-lg transition">
+                                Create Your First Campaign
+                            </a>
+                        </div>
+                        {% endfor %}
+                        
+                    </div>
+                </div>
+                
+            </div>
+            
+            <!-- ========== RIGHT COLUMN (1/3 WIDTH) ========== -->
+            <div class="space-y-8">
+                
+                <!-- Recent Donations -->
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-gray-800">Recent Donations</h2>
+                        <a href="{% url 'my_donations' %}" class="text-[#24324a] hover:text-[#1a2434] text-sm font-medium transition">
+                            View All →
+                        </a>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        
+                        {% for donation in recent_donations %}
+                        <div class="flex items-start gap-3 pb-4 border-b border-gray-100 last:border-0 last:pb-0">
+                            <!-- Avatar -->
+                            <div class="w-10 h-10 bg-[#24324a] rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-white font-medium text-sm">
+                                    {{ donation.donor.username|first|upper }}
+                                </span>
+                            </div>
+                            
+                            <!-- Content -->
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-800 truncate">
+                                    {{ donation.campaign.title }}
+                                </p>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    {{ donation.donated_at|timesince }} ago
+                                </p>
+                            </div>
+                            
+                            <!-- Amount -->
+                            <div class="text-right flex-shrink-0">
+                                <p class="text-sm font-bold text-[#24324a]">
+                                    ₹{{ donation.amount }}
+                                </p>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-8">
+                            <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                            </svg>
+                            <p class="text-sm text-gray-500">No donations yet</p>
+                        </div>
+                        {% endfor %}
+                        
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="bg-[#24324a] rounded-2xl shadow-lg p-6">
+                    <h2 class="text-xl font-bold text-white mb-4">Quick Actions</h2>
+                    
+                    <div class="space-y-3">
+                        <a href="{% url 'create_campaign' %}" 
+                           class="flex items-center gap-3 p-3 bg-white bg-opacity-10 hover:bg-opacity-20 rounded-xl transition group">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M12 4v16m8-8H4"/>
+                            </svg>
+                            <span class="text-white font-medium text-sm">Create New Campaign</span>
+                        </a>
+                        
+                        <a href="{% url 'explore' %}" 
+                           class="flex items-center gap-3 p-3 bg-white bg-opacity-10 hover:bg-opacity-20 rounded-xl transition group">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            <span class="text-white font-medium text-sm">Explore Campaigns</span>
+                        </a>
+                        
+                        <a href="{% url 'my_campaigns' %}" 
+                           class="flex items-center gap-3 p-3 bg-white bg-opacity-10 hover:bg-opacity-20 rounded-xl transition group">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <span class="text-white font-medium text-sm">My Campaigns</span>
+                        </a>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>
+        
     </div>
-    <!-- my campaigns list (two minimal) -->
-    <div class="grid md:grid-cols-2 gap-6">
-        <div class="bg-white p-5 rounded-2xl flex gap-4 shadow-sm"><div class="w-20 h-20 bg-teal-800 rounded-xl flex items-center justify-center text-white font-bold">EM</div><div><h4>Emma's surgery</h4><p class="text-sm text-gray-500">raised $46,780 · 78%</p><div class="flex gap-2 mt-2"><span class="bg-teal-100 text-teal-800 text-xs px-3 py-1 rounded-full">active</span></div></div></div>
-        <div class="bg-white p-5 rounded-2xl flex gap-4 shadow-sm"><div class="w-20 h-20 bg-amber-800 rounded-xl flex items-center justify-center text-white font-bold">SB</div><div><h4>School books</h4><p class="text-sm text-gray-500">raised $3,200 · 22%</p><div class="flex gap-2 mt-2"><span class="bg-yellow-100 text-yellow-800 text-xs px-3 py-1 rounded-full">draft</span></div></div></div>
-        <div class="bg-white p-5 rounded-2xl flex gap-4 shadow-sm"><div class="w-20 h-20 bg-blue-800 rounded-xl flex items-center justify-center text-white font-bold">SB</div><div><h4>Sports event management</h4><p class="text-sm text-gray-500">raised $2,000 · 56%</p><div class="flex gap-2 mt-2"><span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">draft</span></div></div></div>
-
-    </div>
-    <!-- donation history mock -->
-    <div class="mt-8 bg-white p-6 rounded-3xl"><h4 class="font-medium">Recent donations you made</h4><ul class="mt-3 text-sm"><li><i class="fa-regular fa-clock mr-2"></i>You donated $50 to Emma's surgery</li><li class="mt-1"><i class="fa-regular fa-clock mr-2"></i>You donated $25 to Flood relief</li></ul></div>
-    <!-- profile settings preview (simple) -->
-    <div class="mt-8 grid md:grid-cols-2 gap-6"><div><label>Name</label><input class="border p-3 rounded-2xl w-full" value="Alex Rivera"></div><div><label>Email</label><input class="border p-3 rounded-2xl w-full" value="alex@example.com"></div></div>
+    
 </section>
 
 {% endblock %}
