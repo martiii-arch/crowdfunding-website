@@ -363,3 +363,4 @@ def create_admin(request):
     )
 
     return HttpResponse("Admin recreated successfully")
+

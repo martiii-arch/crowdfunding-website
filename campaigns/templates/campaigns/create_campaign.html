@@ -283,12 +283,11 @@
         </div>
 
         <!-- Image field -->
-        <div class="form-group">
+        <!--<div class="form-group">
           <label for="{{ form.image.id_for_label }}">
             <i class="fa-solid fa-image text-teal-500"></i>Campaign Image
           </label>
           {{ form.image }}
-          {# ✅ FIXED: display image errors #}
           {% if form.image.errors %}
             <ul class="errorlist">
               {% for error in form.image.errors %}
@@ -297,7 +296,7 @@
             </ul>
           {% endif %}
           <div class="hint-text">PNG, JPG or GIF (recommended size 1200x630px)</div>
-        </div>
+        </div>-->
 
         <button type="submit" class="submit-btn">
           <i class="fa-solid fa-paper-plane"></i>Launch Campaign
