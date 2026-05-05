@@ -132,71 +132,91 @@ tailwind.config = {
 <section id="campaigns" class="py-16 bg-white">
   <div class="max-w-7xl mx-auto px-4 mt-20">
 
+    <!-- TITLE -->
     <div class="text-center mb-12">
       <h2 class="text-5xl font-bold text-gray-800">Featured Campaigns</h2>
       <p class="text-gray-500 mt-5">Support causes that matter</p>
     </div>
 
+    <!-- GRID -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-20">
 
       {% for campaign in campaigns %}
-      <div class="bg-cardbg rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition">
+      
+      <!-- CLICKABLE CARD -->
+      <a href="{% url 'campaign_detail' campaign.id %}" class="block">
+        <div class="bg-cardbg rounded-2xl shadow-lg overflow-hidden 
+                    hover:shadow-xl hover:scale-[1.02] transition duration-200 cursor-pointer">
 
-        <!-- IMAGE -->
-        {% if campaign.image %}
-        <img src="{{ campaign.image.url }}" class="h-52 w-full object-cover">
-        {% else %}
-        <img src="https://placehold.co/600x400" class="h-52 w-full object-cover">
-        {% endif %}
+          <!-- IMAGE -->
+          {% if campaign.image %}
+          <img src="{{ campaign.image.url }}" class="h-52 w-full object-cover">
+          {% else %}
+          <img src="https://placehold.co/600x400" class="h-52 w-full object-cover">
+          {% endif %}
 
-        <!-- CONTENT -->
-        <div class="p-5">
-          <h3 class="text-xl font-bold text-gray-800">
-            {{ campaign.title }}
-          </h3>
+          <!-- CONTENT -->
+          <div class="p-5">
 
-          <p class="text-gray-500 text-sm mt-1">
-            {{ campaign.description|truncatechars:80 }}
-          </p>
+            <!-- TITLE -->
+            <h3 class="text-xl font-bold text-gray-800">
+              {{ campaign.title }}
+            </h3>
 
-          <!-- PROGRESS -->
-          <div class="mt-4">
-            <div class="flex justify-between text-sm">
-              <span>₹{{ campaign.amount_raised }}</span>
-              <span>₹{{ campaign.goal_amound }}</span>
-            </div>   
-
-            <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
-              <div class="bg-primary h-2 rounded-full"
-                   style="width: {{ campaign.progress }}%">
-              </div>
-            </div>
-            <p class="text-xs text-gray-500 mt-1">
-                     {{ campaign.progress }}% funded
+            <!-- DESCRIPTION -->
+            <p class="text-gray-500 text-sm mt-1">
+              {{ campaign.description|truncatechars:80 }}
             </p>
+
+            <!-- PROGRESS -->
+            <div class="mt-4">
+
+              <!-- AMOUNTS -->
+              <div class="flex justify-between text-sm">
+                <span class="font-semibold text-[#24324a]">
+                  ₹{{ campaign.amount_raised|default:0|floatformat:0 }}
+                </span>
+                <span class="text-gray-400">
+                  ₹{{ campaign.goal_amount }}
+                </span>
+              </div>   
+
+              <!-- PROGRESS BAR -->
+              <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
+                <div class="h-2 rounded-full transition-all duration-500"
+                     style="width: {{ campaign.progress }}%; background-color:#24324a;">
+                </div>
+              </div>
+
+              <!-- PERCENT -->
+              <p class="text-xs text-gray-500 mt-1">
+                {{ campaign.progress }}% funded
+              </p>
+
+            </div>
+
+            <!-- BUTTON (visual only, card is clickable) -->
+            <div class="text-center mt-5 bg-[#24324a]/10 text-[#24324a] py-2 rounded-xl">
+              Donate Now
+            </div>
+
           </div>
-
-          <!-- BUTTON -->
-          <a href="{% url 'campaign_detail' campaign.id %}"
-             class="block text-center mt-5 bg-primary/10 text-primary py-2 rounded-xl hover:bg-primary hover:text-white transition">
-             Donate Now
-          </a>
-
         </div>
-      </div>
+      </a>
+
       {% endfor %}
 
     </div>
 
+    <!-- VIEW ALL -->
     <div class="text-center mt-10">
-      <a href="{% url 'explore' %}" class="text-primary font-semibold">
+      <a href="{% url 'explore' %}" class="font-semibold" style="color:#24324a;">
         View All Campaigns →
       </a>
     </div>
 
   </div>
 </section>
-
 
 <!-- ========== HOW IT WORKS SECTION ========== -->
 <section class="bg-gray-50 py-20 px-4">

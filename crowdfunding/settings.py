@@ -1,23 +1,26 @@
 from pathlib import Path
 import os
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-#  Keys to be moved to .env
+# 🔐 SECRET KEY (keep for now, move to .env later)
 SECRET_KEY = 'django-insecure-y3m$dronst1tf)+%q63@0r2wxdplqrcqk%7s#*w)_x#65z2p1l'
 
+# ❌ TURN OFF DEBUG FOR PRODUCTION
+DEBUG = False
+
+# ✅ ALLOWED HOSTS FOR RENDER
+ALLOWED_HOSTS = ['.onrender.com', '127.0.0.1', 'localhost']
+
+# ✅ CSRF TRUSTED ORIGINS
 CSRF_TRUSTED_ORIGINS = [
-    'https://api.razorpay.com',
-    'https://checkout.razorpay.com',
+    'https://*.onrender.com',
     'http://127.0.0.1:8000',
     'http://localhost:8000',
-
 ]
 
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
+# ---------------- APPS ----------------
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -28,8 +31,10 @@ INSTALLED_APPS = [
     'campaigns',
 ]
 
+# ---------------- MIDDLEWARE ----------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',   # ⭐ IMPORTANT
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -40,6 +45,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'crowdfunding.urls'
 
+# ---------------- TEMPLATES ----------------
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -57,13 +63,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'crowdfunding.wsgi.application'
 
+# ---------------- DATABASE ----------------
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+    )
 }
 
+# ---------------- PASSWORD VALIDATION ----------------
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -71,22 +78,28 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# ---------------- INTERNATIONAL ----------------
 LANGUAGE_CODE = 'en-us'
-
-
 TIME_ZONE = 'Asia/Kolkata'
-
 USE_I18N = True
 USE_TZ = True
 
+# ---------------- STATIC FILES ----------------
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
-
-
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# ⭐ WhiteNoise storage (VERY IMPORTANT)
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# ---------------- MEDIA FILES ----------------
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# ---------------- DEFAULT ----------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# ---------------- MESSAGES ----------------
 from django.contrib.messages import constants as messages
 
 MESSAGE_TAGS = {
@@ -97,14 +110,11 @@ MESSAGE_TAGS = {
     messages.ERROR: 'error',
 }
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-
+# ---------------- AUTH ----------------
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
 
-#  Keys to be moved to .env later
+# ---------------- RAZORPAY ----------------
 RAZORPAY_KEY_ID = "rzp_test_ShmIxRvgYoaNE5"
 RAZORPAY_KEY_SECRET = "ku5BT6JA4p2wQ3J5y4ys6EGg"

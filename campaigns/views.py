@@ -14,12 +14,16 @@ import razorpay
 
 
 # ---------------- HOME ----------------
+from django.db.models import Sum
+
+from django.db.models import Sum
+
 def home(request):
     campaigns = Campaign.objects.all()[:6]
+
     return render(request, 'campaigns/home.html', {
         'campaigns': campaigns
     })
-
 
 # ---------------- EXPLORE ----------------
 def explore(request):
@@ -157,8 +161,7 @@ from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt  
 @login_required
 def payment_success(request):
-    if request.method != "POST":
-        return redirect('home')
+    
 
     payment_id = request.POST.get("razorpay_payment_id", "")
     order_id = request.POST.get("razorpay_order_id", "")
